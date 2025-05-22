@@ -31,10 +31,11 @@ function BarChartCardComponent({ title, data, dataKey, fillColor = '#3B82F6' }: 
           <YAxis tick={{ fill: '#6b7280' }} />
           <Tooltip
             contentStyle={{
-              backgroundColor: '#f9fafb',
+              backgroundColor: '#f3f0ff',     
               borderRadius: '8px',
-              borderColor: '#e5e7eb',
+              borderColor: '#c4b5fd',         
             }}
+
             itemStyle={{ color: '#111827' }}
           />
           <Bar dataKey={dataKey} fill={fillColor} radius={[10, 10, 0, 0]} />

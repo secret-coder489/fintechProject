@@ -1,15 +1,20 @@
 'use client'
+import BarChart from '@/src/components/barChart'
+import LineChart from '@/src/components/lineChart'
+import PiChat from '@/src/components/piChat'
+import { barData, COLORS, lineData, pieData } from '@/src/utils/chartData'
 import { useRouter } from 'next/navigation'
-import LineChartCard from '@/components/lineChart'
-import BarChart from '@/components/barChart'
-import PiChart from '@/components/piChat'
-import { lineData, barData, pieData, COLORS } from '@/utils/chartData';
 
 export default function Dashboard() {
   const router = useRouter()
-
   const handleNavigate = () => {
     router.push('/form')
+  }
+
+    const handleLogout = () => {
+    localStorage.removeItem('token')  
+    
+    router.push('/login')
   }
 
   return (
@@ -18,15 +23,24 @@ export default function Dashboard() {
         <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 drop-shadow-md">
           Fintech Dashboard
         </h1>
-        <button
-          onClick={handleNavigate}
-          className="text-indigo-600 hover:text-white hover:bg-indigo-600 border border-indigo-600 px-4 py-2 rounded-md transition duration-200 w-full md:w-auto"
-        >
-          Open Fintech Form
-        </button>
+        <div className="flex gap-4 w-full md:w-auto">
+          <button
+            onClick={handleNavigate}
+            className="text-indigo-600 hover:text-white hover:bg-indigo-600 border border-indigo-600 px-4 py-2 rounded-md transition duration-200 flex-1 md:flex-none"
+          >
+            Open Fintech Form
+          </button>
+          <button
+            onClick={handleLogout}
+            className="text-red-600 hover:text-white hover:bg-red-600 border border-red-600 px-4 py-2 rounded-md transition duration-200 flex-1 md:flex-none"
+          >
+            Logout
+          </button>
+        </div>
+
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-7xl mx-auto">
-        <LineChartCard
+        <LineChart
           title="Revenue vs Expenses"
           data={lineData}
           dataKeys={[
@@ -34,15 +48,15 @@ export default function Dashboard() {
             { key: 'expenses', stroke: '#10B981' },
           ]}
         />
+        <PiChat
+            title="Portfolio Distribution"
+            data={pieData}
+            colors={COLORS}
+        />
         <BarChart
           title="Account Balances"
           data={barData}
           dataKey="balance"
-        />
-        <PiChart
-          title="Portfolio Distribution"
-          data={pieData}
-          colors={COLORS}
         />
       </div>
     </div>

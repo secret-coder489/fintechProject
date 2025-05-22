@@ -9,7 +9,7 @@ export const lineData = [
 ];
 
 export const barData = [
-  { name: 'Checking', balance: 4000 },
+  { name: 'Checkout', balance: 4000 },
   { name: 'Savings', balance: 3000 },
   { name: 'Investment', balance: 2000 },
 ];
@@ -20,4 +20,5 @@ export const pieData = [
   { name: 'Cash', value: 300 },
 ];
 
-export const COLORS = ['#2563EB', '#059669', '#F97316'];
+export const COLORS = ['#2563EB', '#059669', '#F97316']
+

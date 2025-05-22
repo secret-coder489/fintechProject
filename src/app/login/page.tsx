@@ -1,22 +1,24 @@
 'use client'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { decryptPassword, encryptPassword } from '@/src/utils/authUtils'
 
 export default function Login() {
   const router = useRouter()
-  const [email, setEmail] = useState('')
+  const [loginMail, setLoginMail] = useState('')
   const [password, setPassword] = useState('')
-
+ 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault()
-
+    const encrypted = encryptPassword('pragati123')
     const user = {
       email: 'pragati@fintech.com',
-      password: 'pragati123',
+      password: encrypted 
     }
 
-    if (email === user.email && password === user.password) {
-      router.push('/dashboard') 
+    const decrypted = decryptPassword(user.password)
+    if (loginMail === user.email && password === decrypted) {
+      router.push('/dashboard')
     } else {
       alert('Invalid credentials')
     }
@@ -30,8 +32,8 @@ export default function Login() {
           type="email"
           className="w-full p-2 mb-4 border rounded"
           placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={loginMail}
+          onChange={(e) => setLoginMail(e.target.value)}
           required
         />
         <input
@@ -42,7 +44,7 @@ export default function Login() {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit" className="text-indigo-600 hover:text-white hover:bg-indigo-600 border border-indigo-600 px-4 py-2 rounded-md transition duration-200 w-full md:w-auto">
+        <button type="submit" className="text-purple-600 hover:text-white hover:bg-purple-600 border border-purple-600 px-4 py-2 rounded-md transition duration-200 w-full md:w-auto">
           Log In
         </button>
       </form>
