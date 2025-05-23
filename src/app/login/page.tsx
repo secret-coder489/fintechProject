@@ -1,23 +1,35 @@
 'use client'
+
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { decryptPassword, encryptPassword } from '@/src/utils/authUtils'
+import { loginSchema } from '@/src/lib/schemas/loginSchema'
+
+type LoginForm = z.infer<typeof loginSchema>
 
 export default function Login() {
   const router = useRouter()
-  const [loginMail, setLoginMail] = useState('')
-  const [password, setPassword] = useState('')
- 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
-    const encrypted = encryptPassword('pragati123')
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+  })
+
+  const onSubmit = (data: LoginForm) => {
+    const encryptedPassword = encryptPassword('Pragati@1997')
     const user = {
       email: 'pragati@fintech.com',
-      password: encrypted 
+      password: encryptedPassword,
     }
 
-    const decrypted = decryptPassword(user.password)
-    if (loginMail === user.email && password === decrypted) {
+    const decryptedPassword = decryptPassword(user.password)
+
+    if (data.email === user.email && data.password === decryptedPassword) {
       router.push('/dashboard')
     } else {
       alert('Invalid credentials')
@@ -26,25 +38,36 @@ export default function Login() {
 
   return (
     <div className="flex h-screen items-center justify-center bg-gray-100">
-      <form onSubmit={handleLogin} className="bg-white p-8 shadow rounded w-full max-w-md">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="bg-white p-8 shadow rounded w-full max-w-md"
+      >
         <h1 className="text-2xl font-bold mb-6">Login</h1>
+
         <input
           type="email"
-          className="w-full p-2 mb-4 border rounded"
+          {...register('email')}
           placeholder="Email"
-          value={loginMail}
-          onChange={(e) => setLoginMail(e.target.value)}
-          required
+          className="w-full p-2 mb-1 border rounded"
         />
+        {errors.email && (
+          <p className="text-red-500 text-sm mb-3">{errors.email.message}</p>
+        )}
+
         <input
           type="password"
-          className="w-full p-2 mb-4 border rounded"
+          {...register('password')}
           placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
+          className="w-full p-2 mb-1 border rounded"
         />
-        <button type="submit" className="text-purple-600 hover:text-white hover:bg-purple-600 border border-purple-600 px-4 py-2 rounded-md transition duration-200 w-full md:w-auto">
+        {errors.password && (
+          <p className="text-red-500 text-sm mb-3">{errors.password.message}</p>
+        )}
+
+        <button
+          type="submit"
+          className="text-purple-600 hover:text-white hover:bg-purple-600 border border-purple-600 px-4 py-2 rounded-md transition duration-200 w-full"
+        >
           Log In
         </button>
       </form>
