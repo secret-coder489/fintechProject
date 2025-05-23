@@ -33,7 +33,7 @@ export default function Login() {
   }
 
   const generateToken = (email: string) => {
-    return jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' }) // Ensure SECRET_KEY is set correctly
+    return jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' }) 
   }
 
 
