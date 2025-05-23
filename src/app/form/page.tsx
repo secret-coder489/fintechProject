@@ -1,5 +1,5 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -9,6 +9,7 @@ export default function FintechForm() {
   const router = useRouter()
   const [apiResponse, setApiResponse] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const {
     register,
     handleSubmit,
@@ -16,6 +17,18 @@ export default function FintechForm() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   })
+
+  useEffect(() => {
+    const token = localStorage.getItem('authToken')
+
+    if (!token) {
+      router.push('/login')
+    } else {
+      setIsAuthenticated(true)
+    }
+  }, [])
+
+  if (!isAuthenticated) return null
 
   const onSubmit = (data: FormData) => {
     setLoading(true)
@@ -41,7 +54,7 @@ export default function FintechForm() {
           onClick={handleNavigate}
           className="text-indigo-600 hover:text-white hover:bg-indigo-600 border border-indigo-600 px-4 py-2 rounded-lg transition duration-300 cursor-pointer"
         >
-         Dashboard
+          Dashboard
         </button>
       </div>
 

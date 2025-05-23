@@ -4,8 +4,11 @@ import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { decryptPassword, encryptPassword } from '@/src/utils/authUtils'
+import * as CryptoJS from 'crypto-js'
+import jwt from 'jsonwebtoken'
 import { loginSchema } from '@/src/lib/schemas/loginSchema'
+
+const SECRET_KEY = 'f123e98abf73f4123e209af9bb2387c5f56bcf49ed192a7e09c3b3eafec0a1d2'
 
 type LoginForm = z.infer<typeof loginSchema>
 
@@ -20,7 +23,22 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   })
 
+  const encryptPassword = (password: string) => {
+    return CryptoJS.AES.encrypt(password, SECRET_KEY).toString()
+  }
+
+  const decryptPassword = (ciphertext: string) => {
+    const bytes = CryptoJS.AES.decrypt(ciphertext, SECRET_KEY)
+    return bytes.toString(CryptoJS.enc.Utf8)
+  }
+
+  const generateToken = (email: string) => {
+    return jwt.sign({ email }, SECRET_KEY, { expiresIn: '1h' }) // Ensure SECRET_KEY is set correctly
+  }
+
+
   const onSubmit = (data: LoginForm) => {
+    debugger
     const encryptedPassword = encryptPassword('Pragati@1997')
     const user = {
       email: 'pragati@fintech.com',
@@ -30,6 +48,9 @@ export default function Login() {
     const decryptedPassword = decryptPassword(user.password)
 
     if (data.email === user.email && data.password === decryptedPassword) {
+      const token = SECRET_KEY
+      localStorage.setItem('authToken', token)
+
       router.push('/dashboard')
     } else {
       alert('Invalid credentials')
